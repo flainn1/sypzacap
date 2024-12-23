@@ -3,7 +3,7 @@ import string
 import telebot
 from telebot import types
 
-API_TOKEN = 'your_api_token'
+API_TOKEN = '7579343898:AAEYznuehrWFL2y3VH0fegKAoAF6o3rTqIU'
 CHANNEL_LINK = 'https://t.me/+ScVpIXp3cYpkMjcy'
 SUCCESS_GIF_URL = 'https://media1.tenor.com/m/nlcD6WDDoDsAAAAd/kenshin.gif'
 
