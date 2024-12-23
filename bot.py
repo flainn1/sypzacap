@@ -1,46 +1,44 @@
 import random
 import string
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
+import telebot
+from telebot import types
 
 API_TOKEN = '7579343898:AAEYznuehrWFL2y3VH0fegKAoAF6o3rTqIU'
 CHANNEL_LINK = 'https://t.me/+ScVpIXp3cYpkMjcy'
 
-def start(update: Update, context: CallbackContext) -> None:
-    captcha_word = ''.join(random.choices(string.ascii_lowercase, k=5))
-    context.user_data['captcha'] = captcha_word
-    keyboard = [
-        [InlineKeyboardButton(captcha_word, callback_data='captcha_solved')],
-        [InlineKeyboardButton('1', callback_data='wrong'),
-         InlineKeyboardButton('2', callback_data='wrong'),
-         InlineKeyboardButton('3', callback_data='wrong'),
-         InlineKeyboardButton('4', callback_data='wrong'),
-         InlineKeyboardButton('5', callback_data='wrong'),
-         InlineKeyboardButton('6', callback_data='wrong')]
-    ]
-    update.message.reply_text(
+bot = telebot.TeleBot(API_TOKEN)
+
+def generate_captcha():
+    return ''.join(random.choices(string.ascii_lowercase, k=5))
+
+@bot.message_handler(commands=['start'])
+def start(message):
+    captcha_word = generate_captcha()
+    keyboard = types.InlineKeyboardMarkup()
+    keyboard.add(types.InlineKeyboardButton(captcha_word, callback_data='captcha_solved'))
+    for i in range(1, 7):
+        keyboard.add(types.InlineKeyboardButton(str(i), callback_data='wrong'))
+    
+    bot.send_message(
+        message.chat.id,
         f"👋 Привет! Чтобы получить доступ к каналу, реши капчу: {captcha_word}",
-        reply_markup=InlineKeyboardMarkup(keyboard)
+        reply_markup=keyboard
     )
 
-def button(update: Update, context: CallbackContext) -> None:
-    query = update.callback_query
-    query.answer()
-    
-    if query.data == 'captcha_solved':
-        query.edit_message_text(text="✅ Капча пройдена! Вот ссылка на канал: " + CHANNEL_LINK)
+@bot.callback_query_handler(func=lambda call: True)
+def callback_query(call):
+    if call.data == 'captcha_solved':
+        bot.edit_message_text(
+            chat_id=call.message.chat.id,
+            message_id=call.message.message_id,
+            text="✅ Капча пройдена! Вот ссылка на канал: " + CHANNEL_LINK
+        )
     else:
-        query.edit_message_text(text="❌ Неверно! Попробуйте снова.")
-
-def main() -> None:
-    updater = Updater(API_TOKEN)
-    
-    updater.dispatcher.add_handler(CommandHandler('start', start))
-    updater.dispatcher.add_handler(CallbackQueryHandler(button))
-    
-    updater.start_polling()
-    updater.idle()
+        bot.edit_message_text(
+            chat_id=call.message.chat.id,
+            message_id=call.message.message_id,
+            text="❌ Неверно! Попробуйте снова."
+        )
 
 if __name__ == '__main__':
-    main()
-    
+    bot.polling(none_stop=True)
