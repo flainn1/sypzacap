@@ -15,10 +15,16 @@ def generate_captcha():
 @bot.message_handler(commands=['start'])
 def start(message):
     captcha_word = generate_captcha()
-    options = [captcha_word] + [generate_captcha() for _ in range(5)]
-    random.shuffle(options)  # Shuffle options
+    
+    # Создаем список с неправильными ответами
+    options = [generate_captcha() for _ in range(5)]
+    
+    # Вставляем правильный ответ в случайную позицию
+    correct_position = random.randint(0, 5)
+    options.insert(correct_position, captcha_word)
     
     keyboard = types.InlineKeyboardMarkup(row_width=3)
+    
     for option in options:
         callback_data = 'captcha_solved' if option == captcha_word else 'wrong'
         keyboard.add(types.InlineKeyboardButton(option, callback_data=callback_data))
@@ -47,3 +53,4 @@ def callback_query(call):
 
 if __name__ == '__main__':
     bot.polling(none_stop=True)
+    
