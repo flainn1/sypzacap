@@ -5,7 +5,7 @@ from telebot import types
 
 API_TOKEN = '7579343898:AAEYznuehrWFL2y3VH0fegKAoAF6o3rTqIU'
 CHANNEL_LINK = 'https://t.me/+ScVpIXp3cYpkMjcy'
-SUCCESS_GIF_URL = 'https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExMWNoa2ZtczZjN3JxcnAybzlybXBidWsxbzJ5azNjY3c4aGR0aG83MCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/OjjOPhVoalJLO/giphy.webp'  # Replace with your desired GIF URL
+SUCCESS_GIF_URL = 'https://media1.tenor.com/m/nlcD6WDDoDsAAAAd/kenshin.gif'  # Replace with your desired GIF URL
 
 bot = telebot.TeleBot(API_TOKEN)
 
