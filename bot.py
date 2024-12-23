@@ -14,10 +14,13 @@ def generate_captcha():
 @bot.message_handler(commands=['start'])
 def start(message):
     captcha_word = generate_captcha()
-    keyboard = types.InlineKeyboardMarkup()
+    keyboard = types.InlineKeyboardMarkup(row_width=3)  # Set row width for two rows
     keyboard.add(types.InlineKeyboardButton(captcha_word, callback_data='captcha_solved'))
-    for i in range(1, 7):
-        keyboard.add(types.InlineKeyboardButton(str(i), callback_data='wrong'))
+    
+    # Generate random words for the other buttons
+    for _ in range(6):
+        random_word = generate_captcha()  # Use the same function to create random words
+        keyboard.add(types.InlineKeyboardButton(random_word, callback_data='wrong'))
     
     bot.send_message(
         message.chat.id,
