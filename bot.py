@@ -3,9 +3,9 @@ import string
 import telebot
 from telebot import types
 
-API_TOKEN = '7579343898:AAEYznuehrWFL2y3VH0fegKAoAF6o3rTqIU'
+API_TOKEN = 'your_api_token'
 CHANNEL_LINK = 'https://t.me/+ScVpIXp3cYpkMjcy'
-SUCCESS_GIF_URL = 'https://media1.tenor.com/m/nlcD6WDDoDsAAAAd/kenshin.gif'  # Replace with your desired GIF URL
+SUCCESS_GIF_URL = 'https://media1.tenor.com/m/nlcD6WDDoDsAAAAd/kenshin.gif'
 
 bot = telebot.TeleBot(API_TOKEN)
 
@@ -15,13 +15,13 @@ def generate_captcha():
 @bot.message_handler(commands=['start'])
 def start(message):
     captcha_word = generate_captcha()
-    keyboard = types.InlineKeyboardMarkup(row_width=3) 
+    options = [captcha_word] + [generate_captcha() for _ in range(5)]
+    random.shuffle(options)  # Shuffle options
     
-    keyboard.add(types.InlineKeyboardButton(captcha_word, callback_data='captcha_solved'))
-    
-    for _ in range(5):  
-        random_word = generate_captcha()
-        keyboard.add(types.InlineKeyboardButton(random_word, callback_data='wrong'))
+    keyboard = types.InlineKeyboardMarkup(row_width=3)
+    for option in options:
+        callback_data = 'captcha_solved' if option == captcha_word else 'wrong'
+        keyboard.add(types.InlineKeyboardButton(option, callback_data=callback_data))
     
     bot.send_message(
         message.chat.id,
@@ -32,14 +32,11 @@ def start(message):
 @bot.callback_query_handler(func=lambda call: True)
 def callback_query(call):
     if call.data == 'captcha_solved':
+        bot.send_animation(chat_id=call.message.chat.id, animation=SUCCESS_GIF_URL)
         bot.edit_message_text(
             chat_id=call.message.chat.id,
             message_id=call.message.message_id,
             text="✅ Капча пройдена! Вот ссылка на канал: " + CHANNEL_LINK
-        )
-        bot.send_animation(
-            chat_id=call.message.chat.id,
-            animation=SUCCESS_GIF_URL 
         )
     else:
         bot.edit_message_text(
