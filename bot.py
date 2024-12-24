@@ -5,7 +5,7 @@ from telebot import types
 import time
 
 API_TOKEN = '7579343898:AAEYznuehrWFL2y3VH0fegKAoAF6o3rTqIU'
-CHANNEL_LINK = 'https://t.me/+ScVpIXp3cYpkMjcy'
+CHANNEL_LINK = 'https://t.me/+q0Kg9zjN1TtjNGRi'
 SUCCESS_GIF_URL = 'https://media1.tenor.com/m/nlcD6WDDoDsAAAAd/kenshin.gif'
 
 bot = telebot.TeleBot(API_TOKEN)
@@ -40,7 +40,7 @@ def callback_query(call):
         bot.edit_message_text(
             chat_id=call.message.chat.id,
             message_id=call.message.message_id,
-            text="✅ Капча пройдена! Вот ссылка на канал: " + CHANNEL_LINK
+            text="✅ Капча пройдена! Твоя ссылка: " + CHANNEL_LINK
         )
     else:
         bot.edit_message_text(
