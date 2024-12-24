@@ -2,6 +2,7 @@ import random
 import string
 import telebot
 from telebot import types
+import time
 
 API_TOKEN = '7579343898:AAEYznuehrWFL2y3VH0fegKAoAF6o3rTqIU'
 CHANNEL_LINK = 'https://t.me/+ScVpIXp3cYpkMjcy'
@@ -16,10 +17,7 @@ def generate_captcha():
 def start(message):
     captcha_word = generate_captcha()
     
-    # Создаем список с неправильными ответами
     options = [generate_captcha() for _ in range(5)]
-    
-    # Вставляем правильный ответ в случайную позицию
     correct_position = random.randint(0, 5)
     options.insert(correct_position, captcha_word)
     
@@ -52,5 +50,9 @@ def callback_query(call):
         )
 
 if __name__ == '__main__':
-    bot.polling(none_stop=True)
-    
+    while True:
+        try:
+            bot.polling(none_stop=True)
+        except Exception as e:
+            print(f"Произошла ошибка: {e}")
+            time.sleep(5)  # Подождите 5 секунд перед повторной попыткой
